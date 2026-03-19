@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Fotos | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Fotos</h1>
+  <p class="muted">Data postagem: {{ postagem.data_postagem|date:"d/m/Y" }}</p>
+
+  <div class="form__actions">
+    <a class="btn btn--ghost" href="{% url 'lista_fotos' %}">Voltar</a>
+  </div>
+
+  <div class="table__empty">Descrição: {{ postagem.descricao }}</div>
+
+  {% if fotos %}
+    <div class="photos-grid">
+      {% for foto in fotos %}
+        <div class="photos-grid__item">
+          <img src="{{ foto.imagem.url }}" alt="Foto" />
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="table__empty">Nenhuma foto anexada.</div>
+  {% endif %}
+{% endblock %}

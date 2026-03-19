@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Login | FamperTec{% endblock %}
+
+{% block content %}
+  <h1>Login</h1>
+  <p class="muted">Informe seu e-mail para acessar.</p>
+
+  <form method="post" class="form">
+    {% csrf_token %}
+
+    <div class="form__grid">
+      <label class="field">
+        <span class="field__label">E-mail</span>
+        <input type="email" name="email" required />
+      </label>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn" type="submit">Entrar</button>
+    </div>
+  </form>
+{% endblock %}

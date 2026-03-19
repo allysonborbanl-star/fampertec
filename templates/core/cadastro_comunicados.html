@@ -1,0 +1,75 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{% if comunicado %}Editar Comunicado{% else %}Comunicados{% endif %} | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>{% if comunicado %}Editar Comunicado{% else %}Comunicados{% endif %}</h1>
+  <p class="muted">Preencha os dados abaixo.</p>
+
+  <form method="post" class="form{% if comunicado %} form--editar-comunicado{% endif %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form__grid">
+      <label class="field">
+        <span class="field__label">{{ form.numero_comunicado.label }}</span>
+        {{ form.numero_comunicado }}
+        {% if form.numero_comunicado.errors %}<span class="field__error">{{ form.numero_comunicado.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field">
+        <span class="field__label">{{ form.data_emissao.label }}</span>
+        {{ form.data_emissao }}
+        {% if form.data_emissao.errors %}<span class="field__error">{{ form.data_emissao.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--full">
+        <span class="field__label">{{ form.titulo.label }}</span>
+        {{ form.titulo }}
+        {% if form.titulo.errors %}<span class="field__error">{{ form.titulo.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--link">
+        <span class="field__label">{{ form.link.label }}</span>
+        {{ form.link }}
+        {% if form.link.errors %}<span class="field__error">{{ form.link.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--file">
+        <span class="field__label">{{ form.imagem_capa.label }}</span>
+        {{ form.imagem_capa }}
+        {% if form.imagem_capa.errors %}<span class="field__error">{{ form.imagem_capa.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--file field--doc1">
+        <span class="field__label">{{ form.documento_1.label }}</span>
+        {{ form.documento_1 }}
+        {% if form.documento_1.errors %}<span class="field__error">{{ form.documento_1.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--file field--compact field--doc2">
+        <span class="field__label">{{ form.documento_2.label }}</span>
+        <div class="field__control">
+          {{ form.documento_2 }}
+        </div>
+        {% if form.documento_2.errors %}<span class="field__error">{{ form.documento_2.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field">
+        <span class="field__label">{{ form.visualizacao.label }}</span>
+        {{ form.visualizacao }}
+        {% if form.visualizacao.errors %}<span class="field__error">{{ form.visualizacao.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--full">
+        <span class="field__label">{{ form.descricao.label }}</span>
+        {{ form.descricao }}
+        {% if form.descricao.errors %}<span class="field__error">{{ form.descricao.errors|striptags }}</span>{% endif %}
+      </label>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn" type="submit">Salvar</button>
+      <a class="btn btn--ghost" href="{% url 'lista_comunicados' %}">Voltar</a>
+    </div>
+  </form>
+{% endblock %}

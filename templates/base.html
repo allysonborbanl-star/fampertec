@@ -1,0 +1,52 @@
+﻿<!doctype html>
+<html lang="pt-br">
+  <head>
+    {% load static %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Fampertec{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'app.css' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#0b1220">
+    <link rel="apple-touch-icon" href="{% static 'icons/app-192.png' %}">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <div class="topbar__left">
+          <div class="brand">FamperTec</div>
+          {% if request.path != "/" and request.path != "/login/" %}
+            <nav class="nav">
+              <a class="nav__link" href="{% url 'home' %}">Início</a>
+            </nav>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <main class="container content">
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="message message--{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <span class="muted">by Allyson.</span>
+      </div>
+    </footer>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("{% static 'sw.js' %}");
+        });
+      }
+    </script>
+  </body>
+</html>

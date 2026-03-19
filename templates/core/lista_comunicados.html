@@ -1,0 +1,45 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Comunicados | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Comunicados</h1>
+
+  <div class="form__actions">
+    <a class="btn" href="{% url 'cadastro_comunicados' %}">Cadastrar</a>
+    {% if is_admin %}
+      <a class="btn btn--ghost" href="{% url 'comunicados_envios_pendentes' %}">Pendentes WhatsApp</a>
+    {% endif %}
+    <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>
+  </div>
+
+  <div class="table table--padrao">
+    <div class="table__row table__head">
+      <div>Número</div>
+      <div>Título</div>
+      <div>Data emissão</div>
+      {% if is_admin %}
+        <div class="table__actions-head">Ações</div>
+      {% endif %}
+    </div>
+
+    {% for comunicado in comunicados %}
+      <div class="table__row">
+        <div><a class="nav__link" href="{% url 'detalhe_comunicado' comunicado.id %}">{{ comunicado.numero_comunicado }}</a></div>
+        <div>{{ comunicado.titulo }}</div>
+        <div>{{ comunicado.data_emissao|date:"d/m/Y" }}</div>
+        {% if is_admin %}
+          <div class="table__actions">
+            <a class="btn btn--ghost" href="{% url 'editar_comunicado' comunicado.id %}">Editar</a>
+            <form method="post" action="{% url 'excluir_comunicado' comunicado.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="btn btn--ghost" type="submit">Excluir</button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="table__empty">Nenhum comunicado encontrado.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

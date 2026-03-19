@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Vídeos | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Vídeos</h1>
+
+  <div class="form__actions">
+    <a class="btn" href="{% url 'cadastro_videos' %}">Cadastrar</a>
+    <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>
+  </div>
+
+  <div class="table table--padrao">
+    <div class="table__row table__head">
+      <div>Data postagem</div>
+      <div>Descrição</div>
+      {% if is_admin %}
+        <div class="table__actions-head">Ações</div>
+      {% endif %}
+    </div>
+
+    {% for postagem in postagens %}
+      <div class="table__row">
+        <div>
+          <a class="nav__link" href="{% url 'detalhe_videos' postagem.id %}">
+            {{ postagem.data_postagem|date:"d/m/Y" }}
+          </a>
+        </div>
+        <div>{{ postagem.descricao }}</div>
+        {% if is_admin %}
+          <div class="table__actions">
+            <a class="btn btn--ghost" href="{% url 'editar_videos' postagem.id %}">Editar</a>
+            <form method="post" action="{% url 'excluir_videos' postagem.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="btn btn--ghost" type="submit">Excluir</button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="table__empty">Nenhuma postagem encontrada.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

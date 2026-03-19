@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Vídeos | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Vídeos</h1>
+  <p class="muted">Data postagem: {{ postagem.data_postagem|date:"d/m/Y" }}</p>
+
+  <div class="form__actions">
+    <a class="btn btn--ghost" href="{% url 'lista_videos' %}">Voltar</a>
+  </div>
+
+  <div class="table__empty">Descrição: {{ postagem.descricao }}</div>
+
+  {% if videos %}
+    <div class="videos-grid">
+      {% for video in videos %}
+        <div class="videos-grid__item">
+          <video controls>
+            <source src="{{ video.arquivo.url }}" />
+            Seu navegador não suporta vídeo.
+          </video>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="table__empty">Nenhum vídeo anexado.</div>
+  {% endif %}
+{% endblock %}

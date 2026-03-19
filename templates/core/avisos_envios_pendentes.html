@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Avisos Pendentes | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Avisos pendentes</h1>
+  <p class="muted">Envios de WhatsApp que ainda não foram marcados como enviados.</p>
+
+  {% if pendentes %}
+    <div class="table">
+      <div class="table__row table__head">
+        <div>Aviso</div>
+        <div>Nome</div>
+        <div>Cargo</div>
+        <div>Ação</div>
+      </div>
+      {% for envio in pendentes %}
+        <div class="table__row">
+          <div>{{ envio.aviso.titulo }}</div>
+          <div>{{ envio.perfil.nome_completo }}</div>
+          <div>{{ envio.perfil.cargo|default:"-" }}</div>
+          <div class="table__actions">
+            <a class="btn btn--ghost" href="{% url 'aviso_enviar_whatsapp' envio.id %}">
+              Enviar no WhatsApp
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="table__empty">Nenhum envio pendente.</div>
+  {% endif %}
+
+  <div class="form__actions">
+    <a class="btn btn--ghost" href="{% url 'lista_avisos' %}">Voltar</a>
+  </div>
+{% endblock %}

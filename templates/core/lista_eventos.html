@@ -1,0 +1,48 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Eventos | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Eventos</h1>
+
+  <div class="form__actions">
+    <a class="btn" href="{% url 'cadastro_eventos' %}">Cadastrar</a>
+    {% if is_admin %}
+      <a class="btn btn--ghost" href="{% url 'eventos_envios_pendentes' %}">Pendentes WhatsApp</a>
+    {% endif %}
+    <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>
+  </div>
+
+  <div class="table table--eventos{% if is_admin %} table--admin{% endif %}">
+    <div class="table__row table__head">
+      <div>Evento</div>
+      <div>Data</div>
+      <div>Horário</div>
+      <div>Local</div>
+      {% if is_admin %}
+        <div class="table__actions-head">Ações</div>
+      {% endif %}
+    </div>
+
+    {% for evento in eventos %}
+      <div class="table__row">
+        <div class="table__event"><a class="nav__link" href="{% url 'detalhe_evento' evento.id %}">{{ evento.evento }}</a></div>
+        <div>{{ evento.data_evento|date:"d/m/Y" }}</div>
+        <div>{{ evento.horario_evento|time:"H:i" }}</div>
+        <div>{{ evento.local }}</div>
+        {% if is_admin %}
+          <div class="table__actions">
+            <a class="btn btn--ghost" href="{% url 'editar_evento' evento.id %}">Editar</a>
+            <form method="post" action="{% url 'excluir_evento' evento.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="btn btn--ghost" type="submit">Excluir</button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="table__empty">Nenhum evento encontrado.</div>
+    {% endfor %}
+  </div>
+{% endblock %}
+

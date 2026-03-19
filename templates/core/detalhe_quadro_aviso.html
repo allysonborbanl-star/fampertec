@@ -1,0 +1,32 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ aviso.titulo }} | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>{{ aviso.titulo }}</h1>
+  <p class="muted">Visualização: {{ aviso.visualizacao_display }}</p>
+
+  <div class="form">
+    <p><strong>Data fim publicação:</strong> {{ aviso.data_fim_publicacao|date:"d/m/Y" }}</p>
+    <p><strong>Descrição:</strong> {{ aviso.descricao|linebreaksbr }}</p>
+    {% if aviso.link %}
+      <p><strong>Link:</strong> <a class="nav__link" href="{{ aviso.link }}" target="_blank" rel="noreferrer">Abrir link</a></p>
+    {% endif %}
+    {% if aviso.imagem_capa %}
+      <div class="field field--full">
+        <img src="{{ aviso.imagem_capa.url }}" alt="Imagem de capa" style="max-width: 100%; border-radius: 12px; border: 1px solid var(--line);" />
+      </div>
+    {% endif %}
+    {% if aviso.imagem_1 %}
+      <p><strong>Imagem 1:</strong> <a class="nav__link" href="{{ aviso.imagem_1.url }}" target="_blank" rel="noreferrer">Ver imagem</a></p>
+    {% endif %}
+    {% if aviso.documento %}
+      <p><strong>Documento:</strong> <a class="nav__link" href="{{ aviso.documento.url }}" target="_blank" rel="noreferrer">Baixar</a></p>
+    {% endif %}
+    <p><strong>Criado em:</strong> {{ aviso.criado_em|date:"d/m/Y H:i" }}</p>
+  </div>
+
+  <div class="form__actions">
+    <a class="btn btn--ghost" href="{% url 'lista_quadro_avisos' %}">Voltar</a>
+  </div>
+{% endblock %}

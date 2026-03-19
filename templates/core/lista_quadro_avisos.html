@@ -1,0 +1,45 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Quadro de Avisos | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Quadro de Avisos</h1>
+
+  <div class="form__actions">
+    <a class="btn" href="{% url 'cadastro_quadro_avisos' %}">Cadastrar</a>
+    {% if is_admin %}
+      <a class="btn btn--ghost" href="{% url 'quadro_avisos_envios_pendentes' %}">Pendentes WhatsApp</a>
+    {% endif %}
+    <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>
+  </div>
+
+  <div class="table table--padrao">
+    <div class="table__row table__head">
+      <div>Título</div>
+      <div>Fim publicação</div>
+      <div>Criado em</div>
+      {% if is_admin %}
+        <div class="table__actions-head">Ações</div>
+      {% endif %}
+    </div>
+
+    {% for aviso in avisos %}
+      <div class="table__row">
+        <div><a class="nav__link" href="{% url 'detalhe_quadro_aviso' aviso.id %}">{{ aviso.titulo }}</a></div>
+        <div>{{ aviso.data_fim_publicacao|date:"d/m/Y" }}</div>
+        <div>{{ aviso.criado_em|date:"d/m/Y H:i" }}</div>
+        {% if is_admin %}
+          <div class="table__actions">
+            <a class="btn btn--ghost" href="{% url 'editar_quadro_aviso' aviso.id %}">Editar</a>
+            <form method="post" action="{% url 'excluir_quadro_aviso' aviso.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="btn btn--ghost" type="submit">Excluir</button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="table__empty">Nenhum aviso encontrado.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

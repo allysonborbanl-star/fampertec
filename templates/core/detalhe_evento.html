@@ -1,0 +1,32 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{{ evento.evento }} | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>{{ evento.evento }}</h1>
+  <p class="muted">Visualização: {{ evento.visualizacao_display }}</p>
+
+  <div class="form">
+    <p><strong>Data:</strong> {{ evento.data_evento|date:"d/m/Y" }}</p>
+    <p><strong>Horário:</strong> {{ evento.horario_evento|time:"H:i" }}</p>
+    <p><strong>Local:</strong> {{ evento.local }}</p>
+    <p><strong>Descrição:</strong> {{ evento.descricao|linebreaksbr }}</p>
+    {% if evento.imagem_capa %}
+      <div class="field field--full">
+        <img src="{{ evento.imagem_capa.url }}" alt="Imagem de capa" style="max-width: 100%; border-radius: 12px; border: 1px solid var(--line);" />
+      </div>
+    {% endif %}
+    {% if evento.imagem_1 %}
+      <p><strong>Imagem 1:</strong> <a class="nav__link" href="{{ evento.imagem_1.url }}" target="_blank" rel="noreferrer">Ver imagem</a></p>
+    {% endif %}
+    {% if evento.documento %}
+      <p><strong>Documento:</strong> <a class="nav__link" href="{{ evento.documento.url }}" target="_blank" rel="noreferrer">Baixar</a></p>
+    {% endif %}
+    <p><strong>Criado em:</strong> {{ evento.criado_em|date:"d/m/Y H:i" }}</p>
+  </div>
+
+  <div class="form__actions">
+    <a class="btn btn--ghost" href="{% url 'lista_eventos' %}">Voltar</a>
+  </div>
+{% endblock %}
+

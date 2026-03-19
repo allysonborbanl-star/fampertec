@@ -1,0 +1,113 @@
+﻿{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Início | Fampertec{% endblock %}
+
+{% block content %}
+  <section class="hero">
+    <h1>Bem-vindo!</h1>
+    {% if perfil %}
+      <p class="muted">{{ perfil.nome_completo }}</p>
+    {% endif %}
+  </section>
+
+  <section class="grid">
+    <a class="tile" href="{% url 'aniversariantes' %}">
+      <img
+        class="tile__icon"
+        src="{% static 'icons/aniversariantes.svg' %}"
+        width="24"
+        height="24"
+        alt=""
+        aria-hidden="true"
+      />
+      <span class="tile__label">Aniversariantes</span>
+    </a>
+
+    <a class="tile" href="{% url 'lista_comunicados' %}">
+      <img
+        class="tile__icon"
+        src="{% static 'icons/comunicados.svg' %}"
+        width="24"
+        height="24"
+        alt=""
+        aria-hidden="true"
+      />
+      <span class="tile__label">Comunicados</span>
+    </a>
+
+    {% if perfil and perfil.controle_acesso == "admin" %}
+      <a class="tile" href="{% url 'lista_perfis' %}">
+        <img
+          class="tile__icon"
+          src="{% static 'icons/cadastro-perfil.svg' %}"
+          width="24"
+          height="24"
+          alt=""
+          aria-hidden="true"
+        />
+        <span class="tile__label">Cadastro de Perfil</span>
+      </a>
+    {% endif %}
+
+    <a class="tile" href="{% url 'lista_eventos' %}">
+      <img
+        class="tile__icon"
+        src="{% static 'icons/eventos.svg' %}"
+        width="24"
+        height="24"
+        alt=""
+        aria-hidden="true"
+      />
+      <span class="tile__label">Eventos</span>
+    </a>
+
+    <a class="tile" href="{% url 'lista_fotos' %}">
+      <img
+        class="tile__icon"
+        src="{% static 'icons/fotos.svg' %}"
+        width="24"
+        height="24"
+        alt=""
+        aria-hidden="true"
+      />
+      <span class="tile__label">Fotos</span>
+    </a>
+
+    <a class="tile" href="{% url 'lista_avisos' %}">
+      <img
+        class="tile__icon"
+        src="{% static 'icons/avisos.svg' %}"
+        width="24"
+        height="24"
+        alt=""
+        aria-hidden="true"
+      />
+      <span class="tile__label tile__label--wrap">Mural de Avisos Internos</span>
+    </a>
+
+    <a class="tile" href="{% url 'lista_quadro_avisos' %}">
+      <img
+        class="tile__icon"
+        src="{% static 'icons/quadro-avisos.svg' %}"
+        width="24"
+        height="24"
+        alt=""
+        aria-hidden="true"
+      />
+      <span class="tile__label">Quadro de Avisos</span>
+    </a>
+
+    <a class="tile" href="{% url 'lista_videos' %}">
+      <img
+        class="tile__icon"
+        src="{% static 'icons/videos.svg' %}"
+        width="24"
+        height="24"
+        alt=""
+        aria-hidden="true"
+      />
+      <span class="tile__label">Vídeos</span>
+    </a>
+  </section>
+{% endblock %}

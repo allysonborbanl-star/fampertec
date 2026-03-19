@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Links de WhatsApp | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Links de WhatsApp</h1>
+  <p class="muted">Aviso: {{ aviso.titulo }}</p>
+
+  {% if destinatarios %}
+    <div class="table">
+      <div class="table__row table__head">
+        <div>Nome</div>
+        <div>Cargo</div>
+        <div>Ação</div>
+      </div>
+      {% for pessoa in destinatarios %}
+        <div class="table__row">
+          <div>{{ pessoa.nome }}</div>
+          <div>{{ pessoa.cargo|default:"-" }}</div>
+          <div class="table__actions">
+            <a
+              class="btn btn--ghost"
+              href="https://api.whatsapp.com/send?phone={{ pessoa.telefone_whats }}&text=Aviso%20Interno"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Enviar no WhatsApp
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="table__empty">Nenhum destinatário com telefone encontrado para este aviso.</div>
+  {% endif %}
+
+  <div class="form__actions">
+    <a class="btn" href="{% url 'lista_avisos' %}">Ir para avisos</a>
+    <a class="btn btn--ghost" href="{% url 'cadastro_avisos' %}">Cadastrar outro aviso</a>
+  </div>
+{% endblock %}

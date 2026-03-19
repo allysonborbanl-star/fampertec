@@ -1,0 +1,67 @@
+﻿{% extends "base.html" %}
+
+{% block title %}{% if aviso %}Editar Aviso{% else %}Quadro de Avisos{% endif %} | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>{% if aviso %}Editar Aviso{% else %}Quadro de Avisos{% endif %}</h1>
+  <p class="muted">Preencha os dados abaixo.</p>
+
+  <form method="post" class="form{% if aviso %} form--editar-quadro-aviso{% else %} form--cadastro-quadro-aviso{% endif %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form__grid">
+      <label class="field">
+        <span class="field__label">{{ form.titulo.label }}</span>
+        {{ form.titulo }}
+        {% if form.titulo.errors %}<span class="field__error">{{ form.titulo.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field">
+        <span class="field__label">{{ form.data_fim_publicacao.label }}</span>
+        {{ form.data_fim_publicacao }}
+        {% if form.data_fim_publicacao.errors %}<span class="field__error">{{ form.data_fim_publicacao.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--link">
+        <span class="field__label">{{ form.link.label }}</span>
+        {{ form.link }}
+        {% if form.link.errors %}<span class="field__error">{{ form.link.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--file">
+        <span class="field__label">{{ form.imagem_capa.label }}</span>
+        {{ form.imagem_capa }}
+        {% if form.imagem_capa.errors %}<span class="field__error">{{ form.imagem_capa.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--file field--imagem-1">
+        <span class="field__label">{{ form.imagem_1.label }}</span>
+        {{ form.imagem_1 }}
+        {% if form.imagem_1.errors %}<span class="field__error">{{ form.imagem_1.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--file">
+        <span class="field__label">{{ form.documento.label }}</span>
+        {{ form.documento }}
+        {% if form.documento.errors %}<span class="field__error">{{ form.documento.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field">
+        <span class="field__label">{{ form.visualizacao.label }}</span>
+        {{ form.visualizacao }}
+        {% if form.visualizacao.errors %}<span class="field__error">{{ form.visualizacao.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--full">
+        <span class="field__label">{{ form.descricao.label }}</span>
+        {{ form.descricao }}
+        {% if form.descricao.errors %}<span class="field__error">{{ form.descricao.errors|striptags }}</span>{% endif %}
+      </label>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn" type="submit">Salvar</button>
+      <a class="btn btn--ghost" href="{% url 'lista_quadro_avisos' %}">Voltar</a>
+    </div>
+  </form>
+{% endblock %}

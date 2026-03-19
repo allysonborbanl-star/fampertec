@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Aniversariantes | Fampertec{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>
+  </div>
+
+  <section class="birthday">
+    <div class="birthday__banner birthday__banner--image">
+    </div>
+
+    <div class="birthday__content">
+      {% if aniversariantes %}
+        <div class="birthday__list">
+          {% for pessoa in aniversariantes %}
+            <div class="birthday__item">
+              <div class="birthday__name">{{ pessoa.nome_completo }}</div>
+              {% if pessoa.cargo %}
+                <div class="birthday__role">{{ pessoa.cargo }}</div>
+              {% endif %}
+              {% if pessoa.telefone_whats %}
+                <a
+                  class="btn btn--ghost birthday__whats"
+                  href="https://api.whatsapp.com/send?phone={{ pessoa.telefone_whats }}&text=Parab%C3%A9ns%2C%20{{ pessoa.nome_completo|urlencode }}"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Parabenizar
+                </a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="birthday__empty">
+          <img
+            class="birthday__emoji-img"
+            src="{% static 'img/emoji-triste.jpg' %}?v=4"
+            alt="Carinha triste"
+            width="140"
+            height="140"
+            loading="lazy"
+            style="width: 140px; height: 140px;"
+          />
+          <div class="birthday__empty-text">Hoje não tem aniversariantes!!!</div>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

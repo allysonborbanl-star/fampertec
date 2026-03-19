@@ -1,0 +1,53 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Cadastros de Perfil | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Cadastros de Perfil</h1>
+  <p class="muted"></p>
+
+  <div class="form__actions">
+    {% if is_admin %}
+      <a class="btn" href="{% url 'cadastro_perfil' %}">Cadastrar</a>
+    {% endif %}
+    <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>
+  </div>
+
+  <div class="table table--perfis">
+    <div class="table__row table__head">
+      <div>Nome completo</div>
+      <div>Email</div>
+      <div>Telefone</div>
+      <div>Data de nascimento</div>
+      <div>Controle de acesso</div>
+      <div>Criado em</div>
+      <div class="table__actions-head">Ações</div>
+    </div>
+
+    {% for perfil in perfis %}
+      <div class="table__row">
+        <div>{{ perfil.nome_completo }}</div>
+        <div>{{ perfil.email }}</div>
+        <div>{{ perfil.telefone|default:"-" }}</div>
+        <div>{{ perfil.data_nascimento|date:"d/m/Y" }}</div>
+        <div>{{ perfil.get_controle_acesso_display }}</div>
+        <div>{{ perfil.criado_em|date:"d/m/Y H:i" }}</div>
+        <div class="table__actions">
+          {% if is_admin %}
+            <a class="btn btn--ghost" href="{% url 'editar_perfil' perfil.id %}">Editar</a>
+            <form method="post" action="{% url 'excluir_perfil' perfil.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="btn btn--ghost" type="submit">Excluir</button>
+            </form>
+          {% else %}
+            <span class="muted">-</span>
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <div class="table__empty">Nenhum cadastro encontrado.</div>
+    {% endfor %}
+  </div>
+{% endblock %}
+
+

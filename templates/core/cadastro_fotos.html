@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Fotos | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Fotos</h1>
+  <p class="muted">Preencha os dados abaixo.</p>
+
+  <form method="post" class="form" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form__grid">
+      <label class="field">
+        <span class="field__label">{{ form.data_postagem.label }}</span>
+        {{ form.data_postagem }}
+        {% if form.data_postagem.errors %}<span class="field__error">{{ form.data_postagem.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--full">
+        <span class="field__label">{{ form.descricao.label }}</span>
+        {{ form.descricao }}
+        {% if form.descricao.errors %}<span class="field__error">{{ form.descricao.errors|striptags }}</span>{% endif %}
+      </label>
+
+      <label class="field field--file field--full field--file-plus">
+        <span class="field__label">Anexar fotos</span>
+        <div class="field__control field__control--inline">
+          <div class="field__files" id="foto-files">
+            <input type="file" name="fotos" multiple />
+          </div>
+          <button class="btn btn--ghost btn--icon" type="button" id="add-foto" aria-label="Adicionar foto">+</button>
+        </div>
+      </label>
+    </div>
+
+    <div class="form__actions">
+      <button class="btn" type="submit">Salvar</button>
+      <a class="btn btn--ghost" href="{% url 'lista_fotos' %}">Voltar</a>
+    </div>
+  </form>
+
+  <script>
+    (function () {
+      var addBtn = document.getElementById("add-foto");
+      if (!addBtn) return;
+      addBtn.addEventListener("click", function () {
+        var wrapper = document.getElementById("foto-files");
+        if (!wrapper) return;
+        var input = document.createElement("input");
+        input.type = "file";
+        input.name = "fotos";
+        wrapper.appendChild(input);
+        input.focus();
+      });
+    })();
+  </script>
+{% endblock %}
