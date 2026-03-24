@@ -24,9 +24,21 @@
       <p><strong>Documento:</strong> <a class="nav__link" href="{{ aviso.documento.url }}" target="_blank" rel="noreferrer">Baixar</a></p>
     {% endif %}
     <p><strong>Criado em:</strong> {{ aviso.criado_em|date:"d/m/Y H:i" }}</p>
+    {% if envio %}
+      <p><strong>Status:</strong> {{ envio.get_status_display }}</p>
+      {% if envio.lido_em %}
+        <p><strong>Leitura confirmada em:</strong> {{ envio.lido_em|date:"d/m/Y H:i" }}</p>
+      {% endif %}
+    {% endif %}
   </div>
 
   <div class="form__actions">
+    {% if not envio or envio.status != "LIDO" %}
+      <form method="post" action="{% url 'aviso_confirmar_leitura' aviso.id %}" style="display:inline;">
+        {% csrf_token %}
+        <button class="btn" type="submit">Confirmar leitura</button>
+      </form>
+    {% endif %}
     <a class="btn btn--ghost" href="{% url 'lista_avisos' %}">Voltar</a>
   </div>
 {% endblock %}

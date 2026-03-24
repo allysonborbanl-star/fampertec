@@ -17,8 +17,6 @@
     <div class="table__row table__head">
       <div>Evento</div>
       <div>Data</div>
-      <div>Horário</div>
-      <div>Local</div>
       {% if is_admin %}
         <div class="table__actions-head">Ações</div>
       {% endif %}
@@ -28,8 +26,6 @@
       <div class="table__row">
         <div class="table__event"><a class="nav__link" href="{% url 'detalhe_evento' evento.id %}">{{ evento.evento }}</a></div>
         <div>{{ evento.data_evento|date:"d/m/Y" }}</div>
-        <div>{{ evento.horario_evento|time:"H:i" }}</div>
-        <div>{{ evento.local }}</div>
         {% if is_admin %}
           <div class="table__actions">
             <a class="btn btn--ghost" href="{% url 'editar_evento' evento.id %}">Editar</a>

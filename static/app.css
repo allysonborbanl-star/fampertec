@@ -387,39 +387,85 @@ input:focus, textarea:focus, select:focus { border-color: rgba(34, 211, 238, 0.5
 .table {
   margin-top: 16px;
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .table__row {
   display: grid;
-  grid-template-columns: 2fr 2fr 1.2fr 1.2fr 1.2fr 1.2fr;
-  gap: 10px;
+  grid-template-columns: 1fr 1fr auto; /* 👈 mantém ações no tamanho certo */
+  gap: 8px;
   align-items: center;
-  padding: 12px 14px;
+  padding-inline: 14px; /* 👈 diminui recuo */
   border-radius: 14px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* PADRÃO (IMPORTANTE: última coluna auto) */
 .table--padrao .table__row {
-  grid-template-columns: minmax(420px, 1fr) 140px 180px 220px;
+  grid-template-columns: 1fr 1fr auto;
+
 }
 
+.table--status .table__row,
+.table--status .table__head {
+  grid-template-columns: minmax(90px, 0.6fr) minmax(220px, 1.4fr) minmax(120px, 0.7fr) minmax(100px, 0.5fr);
+}
+
+.table--status.table--admin .table__row,
+.table--status.table--admin .table__head {
+  grid-template-columns: minmax(90px, 0.5fr) minmax(220px, 1.3fr) minmax(120px, 0.6fr) minmax(100px, 0.5fr) max-content;
+  gap: 6px;
+}
+
+.table--padrao.table--admin .table__row,
+.table--padrao.table--admin .table__head {
+  grid-template-columns: minmax(90px, 0.5fr) minmax(240px, 1.2fr) minmax(120px, 0.5fr) max-content;
+  gap: 6px;
+}
+
+.table.table--status.table--admin .table__row,
+.table.table--status.table--admin .table__head {
+  grid-template-columns: minmax(90px, 0.5fr) minmax(220px, 1.3fr) minmax(120px, 0.6fr) minmax(100px, 0.5fr) max-content;
+  gap: 6px;
+}
+
+.table--padrao.table--admin.table--3col .table__row,
+.table--padrao.table--admin.table--3col .table__head {
+  grid-template-columns: minmax(120px, 0.55fr) minmax(160px, 0.85fr) minmax(170px, 0.8fr);
+  gap: 6px;
+}
+
+/* PERFIS (CORRIGIDO) */
 .table--perfis .table__row {
-  grid-template-columns: minmax(220px, 1fr) 220px 120px 150px 160px 160px 200px;
+  grid-template-columns: minmax(220px, 1fr) 220px auto;
 }
 
+/* EVENTOS ADMIN */
 .table.table--eventos.table--admin .table__row {
-  grid-template-columns: minmax(530px, 1fr) 140px 110px minmax(190px, 0.7fr) 230px !important;
+  grid-template-columns: minmax(530px, 1fr) 160px minmax(160px, 0.6fr) !important;
 }
 
+/* EVENTOS NORMAL */
 .table.table--eventos:not(.table--admin) .table__row {
-  grid-template-columns: minmax(530px, 1fr) 140px 110px minmax(190px, 0.7fr) !important;
+  grid-template-columns: minmax(530px, 1fr) 160px !important;
+}
+
+.table.table--eventos .table__actions,
+.table.table--eventos .table__actions-head {
+  justify-content: flex-start;
+  justify-self: start;
+  text-align: left;
 }
 
 .table__head {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto; /* 👈 igual às linhas */
   font-weight: 650;
   background: rgba(255, 255, 255, 0.08);
+  gap: 8px;
+  align-items: center;
+ 
 }
 
 .table__empty {
@@ -427,29 +473,48 @@ input:focus, textarea:focus, select:focus { border-color: rgba(34, 211, 238, 0.5
   border-radius: 14px;
   border: 1px dashed var(--line);
   color: var(--muted);
+
 }
 
+/* 🔥 AQUI ESTAVA O PROBLEMA */
 .table__actions {
   display: flex;
-  justify-content: center;
-  justify-self: center;
+  justify-content: flex-end; /* 👈 cola na direita */
+  justify-self: end;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: nowrap;
+  white-space: nowrap;
+
 }
 
+/* HEADER DAS AÇÕES */
 .table__actions-head {
-  text-align: center;
-  justify-self: center;
+  text-align: right; /* alinha com os botões */
+  justify-self: end;
+
+}
+
+.table--padrao.table--admin .table__actions,
+.table--padrao.table--admin .table__actions-head {
+  justify-content: flex-end;
+  justify-self: end;
+  text-align: right;
+}
+
+.table--padrao.table--admin.table--3col .table__actions {
+  flex-wrap: nowrap;
 }
 
 .table__actions form {
   margin: 0;
+  display: inline-flex;
 }
 
 .table__actions .btn {
   white-space: nowrap;
-  width: 110px;
+  width: auto;
+  min-width: 92px;
   text-align: center;
 }
 
@@ -458,6 +523,11 @@ input:focus, textarea:focus, select:focus { border-color: rgba(34, 211, 238, 0.5
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 10px;
+}
+
+.table__stack {
+  display: grid;
+  gap: 6px;
 }
 
 .birthday {
@@ -618,6 +688,11 @@ input:focus, textarea:focus, select:focus { border-color: rgba(34, 211, 238, 0.5
   }
 
   .table--padrao .table__row {
+    grid-template-columns: 1fr 1fr auto;
+  }
+
+  .table--padrao.table--admin .table__row,
+  .table--padrao.table--admin .table__head {
     grid-template-columns: 1fr 1fr;
   }
 
@@ -631,6 +706,43 @@ input:focus, textarea:focus, select:focus { border-color: rgba(34, 211, 238, 0.5
   .hero h1 { font-size: 28px; }
   .grid { grid-template-columns: 1fr; }
   .form__grid { grid-template-columns: 1fr; }
+
+  .table--padrao.table--admin .table__row,
+  .table--padrao.table--admin .table__head,
+  .table--padrao .table__row,
+  .table--padrao .table__head {
+    grid-template-columns: 1fr;
+  }
+
+  .table__head {
+    display: none;
+  }
+
+  .table__row {
+    gap: 6px;
+    align-items: start;
+  }
+
+  .table__row > [data-label] {
+    display: grid;
+    gap: 4px;
+  }
+
+  .table__row > [data-label]::before {
+    content: attr(data-label);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.2px;
+  }
+
+  .table__actions {
+    justify-content: flex-start;
+    justify-self: start;
+  }
+
+  .table__actions .btn {
+    width: auto;
+  }
 }
 
 @media (max-width: 520px) {

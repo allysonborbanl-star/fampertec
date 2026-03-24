@@ -9,15 +9,17 @@
     <a class="btn" href="{% url 'cadastro_avisos' %}">Cadastrar</a>
     {% if is_admin %}
       <a class="btn btn--ghost" href="{% url 'avisos_envios_pendentes' %}">Pendentes WhatsApp</a>
+      <a class="btn btn--ghost" href="{% url 'avisos_leituras' %}">Leituras confirmadas</a>
     {% endif %}
     <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>
   </div>
 
-  <div class="table table--padrao">
+  <div class="table table--padrao table--status{% if is_admin %} table--admin{% endif %}">
     <div class="table__row table__head">
       <div>Título</div>
       <div>Fim publicação</div>
       <div>Criado em</div>
+      <div>Status</div>
       {% if is_admin %}
         <div class="table__actions-head">Ações</div>
       {% endif %}
@@ -25,11 +27,12 @@
 
     {% for aviso in avisos %}
       <div class="table__row">
-        <div><a class="nav__link" href="{% url 'detalhe_aviso' aviso.id %}">{{ aviso.titulo }}</a></div>
-        <div>{{ aviso.data_fim_publicacao|date:"d/m/Y" }}</div>
-        <div>{{ aviso.criado_em|date:"d/m/Y H:i" }}</div>
+        <div data-label="Título"><a class="nav__link" href="{% url 'detalhe_aviso' aviso.id %}">{{ aviso.titulo }}</a></div>
+        <div data-label="Fim publicação">{{ aviso.data_fim_publicacao|date:"d/m/Y" }}</div>
+        <div data-label="Criado em">{{ aviso.criado_em|date:"d/m/Y H:i" }}</div>
+        <div data-label="Status">{{ aviso.status_leitura }}</div>
         {% if is_admin %}
-          <div class="table__actions">
+          <div class="table__actions" data-label="Ações">
             <a class="btn btn--ghost" href="{% url 'editar_aviso' aviso.id %}">Editar</a>
             <form method="post" action="{% url 'excluir_aviso' aviso.id %}" style="display:inline;">
               {% csrf_token %}

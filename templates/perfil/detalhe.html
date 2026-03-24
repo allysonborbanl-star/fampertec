@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}{{ perfil.nome_completo }} | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>{{ perfil.nome_completo }}</h1>
+  <p class="muted">{{ perfil.get_controle_acesso_display }}</p>
+
+  <div class="form">
+    <p><strong>Email:</strong> {{ perfil.email }}</p>
+    <p><strong>Telefone:</strong> {{ perfil.telefone|default:"-" }}</p>
+    <p><strong>Cargo:</strong> {{ perfil.cargo|default:"-" }}</p>
+    <p><strong>Data de nascimento:</strong> {{ perfil.data_nascimento|date:"d/m/Y" }}</p>
+    <p><strong>Criado em:</strong> {{ perfil.criado_em|date:"d/m/Y H:i" }}</p>
+  </div>
+
+  <div class="form__actions">
+    {% if is_admin %}
+      <a class="btn" href="{% url 'editar_perfil' perfil.id %}">Editar</a>
+    {% endif %}
+    <a class="btn btn--ghost" href="{% url 'lista_perfis' %}">Voltar</a>
+  </div>
+{% endblock %}

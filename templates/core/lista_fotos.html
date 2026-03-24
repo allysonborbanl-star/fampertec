@@ -10,7 +10,7 @@
     <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>
   </div>
 
-  <div class="table table--padrao">
+  <div class="table table--padrao{% if is_admin %} table--admin table--3col{% endif %}">
     <div class="table__row table__head">
       <div>Data postagem</div>
       <div>Descrição</div>

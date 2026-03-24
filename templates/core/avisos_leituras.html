@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Leituras de Avisos | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Leituras de Avisos</h1>
+
+  <div class="form__actions">
+    <a class="btn btn--ghost" href="{% url 'lista_avisos' %}">Voltar</a>
+  </div>
+
+  <form class="form" method="get" action="{% url 'avisos_leituras' %}">
+    <div class="form__grid">
+      <div class="field">
+        <label class="field__label" for="filtro-aviso">Aviso</label>
+        <input id="filtro-aviso" type="text" name="aviso" value="{{ busca_aviso|default:'' }}" placeholder="Título do aviso" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="filtro-usuario">Usuário</label>
+        <input id="filtro-usuario" type="text" name="usuario" value="{{ busca_usuario|default:'' }}" placeholder="Nome do usuário" />
+      </div>
+    </div>
+    <div class="form__actions">
+      <button class="btn" type="submit">Filtrar</button>
+      <a class="btn btn--ghost" href="{% url 'avisos_leituras' %}">Limpar</a>
+    </div>
+  </form>
+
+  <div class="table table--padrao">
+    <div class="table__row table__head">
+      <div>Aviso</div>
+      <div>Leituras confirmadas</div>
+      <div>Usuários</div>
+    </div>
+
+    {% for aviso in avisos %}
+      <div class="table__row">
+        <div>{{ aviso.titulo }}</div>
+        <div>{{ aviso.envios_lidos|length }}</div>
+        <div>
+          {% if aviso.envios_lidos %}
+            <div class="table__stack">
+              {% for envio in aviso.envios_lidos %}
+                <div>
+                  {{ envio.perfil.nome_completo }}
+                  {% if envio.lido_em %}
+                    - {{ envio.lido_em|date:"d/m/Y H:i" }}
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <span class="muted">Nenhuma leitura confirmada.</span>
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <div class="table__empty">Nenhum aviso encontrado.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

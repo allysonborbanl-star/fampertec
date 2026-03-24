@@ -30,10 +30,17 @@ class Aviso(models.Model):
 
 
 class AvisoEnvio(models.Model):
+    STATUS_CHOICES = [
+        ("PENDENTE", "Pendente"),
+        ("LIDO", "Lido"),
+    ]
+
     aviso = models.ForeignKey(Aviso, on_delete=models.CASCADE, related_name="envios")
     perfil = models.ForeignKey("perfil.CadastroPerfil", on_delete=models.CASCADE)
     telefone_whats = models.CharField(max_length=20)
     enviado_em = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PENDENTE")
+    lido_em = models.DateTimeField(blank=True, null=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -68,10 +75,17 @@ class QuadroAviso(models.Model):
 
 
 class QuadroAvisoEnvio(models.Model):
+    STATUS_CHOICES = [
+        ("PENDENTE", "Pendente"),
+        ("LIDO", "Lido"),
+    ]
+
     quadro_aviso = models.ForeignKey(QuadroAviso, on_delete=models.CASCADE, related_name="envios")
     perfil = models.ForeignKey("perfil.CadastroPerfil", on_delete=models.CASCADE)
     telefone_whats = models.CharField(max_length=20)
     enviado_em = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PENDENTE")
+    lido_em = models.DateTimeField(blank=True, null=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -107,10 +121,17 @@ class Comunicado(models.Model):
 
 
 class ComunicadoEnvio(models.Model):
+    STATUS_CHOICES = [
+        ("PENDENTE", "Pendente"),
+        ("LIDO", "Lido"),
+    ]
+
     comunicado = models.ForeignKey(Comunicado, on_delete=models.CASCADE, related_name="envios")
     perfil = models.ForeignKey("perfil.CadastroPerfil", on_delete=models.CASCADE)
     telefone_whats = models.CharField(max_length=20)
     enviado_em = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="PENDENTE")
+    lido_em = models.DateTimeField(blank=True, null=True)
     criado_em = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -29,6 +29,19 @@ def lista_perfis(request):
     )
 
 
+def detalhe_perfil(request, pk):
+    perfil_logado = _get_perfil_logado(request)
+    if not perfil_logado:
+        return redirect("login")
+
+    perfil = get_object_or_404(CadastroPerfil, pk=pk)
+    return render(
+        request,
+        "perfil/detalhe.html",
+        {"perfil": perfil, "perfil_logado": perfil_logado, "is_admin": _is_admin(perfil_logado)},
+    )
+
+
 def cadastro_perfil(request):
     perfil_logado = _get_perfil_logado(request)
     if not perfil_logado:

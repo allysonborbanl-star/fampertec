@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Leituras de Comunicados | Fampertec{% endblock %}
+
+{% block content %}
+  <h1>Leituras de Comunicados</h1>
+
+  <div class="form__actions">
+    <a class="btn btn--ghost" href="{% url 'lista_comunicados' %}">Voltar</a>
+  </div>
+
+  <form class="form" method="get" action="{% url 'comunicados_leituras' %}">
+    <div class="form__grid">
+      <div class="field">
+        <label class="field__label" for="filtro-comunicado">Comunicado</label>
+        <input id="filtro-comunicado" type="text" name="comunicado" value="{{ busca_comunicado|default:'' }}" placeholder="Número ou título" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="filtro-usuario">Usuário</label>
+        <input id="filtro-usuario" type="text" name="usuario" value="{{ busca_usuario|default:'' }}" placeholder="Nome do usuário" />
+      </div>
+    </div>
+    <div class="form__actions">
+      <button class="btn" type="submit">Filtrar</button>
+      <a class="btn btn--ghost" href="{% url 'comunicados_leituras' %}">Limpar</a>
+    </div>
+  </form>
+
+  <div class="table table--padrao">
+    <div class="table__row table__head">
+      <div>Comunicado</div>
+      <div>Leituras confirmadas</div>
+      <div>Usuários</div>
+    </div>
+
+    {% for comunicado in comunicados %}
+      <div class="table__row">
+        <div>
+          <strong>{{ comunicado.numero_comunicado }}</strong><br />
+          {{ comunicado.titulo }}
+        </div>
+        <div>{{ comunicado.envios_lidos|length }}</div>
+        <div>
+          {% if comunicado.envios_lidos %}
+            <div class="table__stack">
+              {% for envio in comunicado.envios_lidos %}
+                <div>
+                  {{ envio.perfil.nome_completo }}
+                  {% if envio.lido_em %}
+                    - {{ envio.lido_em|date:"d/m/Y H:i" }}
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <span class="muted">Nenhuma leitura confirmada.</span>
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <div class="table__empty">Nenhum comunicado encontrado.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

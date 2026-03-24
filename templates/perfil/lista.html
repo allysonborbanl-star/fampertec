@@ -17,22 +17,14 @@
     <div class="table__row table__head">
       <div>Nome completo</div>
       <div>Email</div>
-      <div>Telefone</div>
-      <div>Data de nascimento</div>
-      <div>Controle de acesso</div>
-      <div>Criado em</div>
       <div class="table__actions-head">Ações</div>
     </div>
 
     {% for perfil in perfis %}
       <div class="table__row">
-        <div>{{ perfil.nome_completo }}</div>
+        <div><a class="nav__link" href="{% url 'detalhe_perfil' perfil.id %}">{{ perfil.nome_completo }}</a></div>
         <div>{{ perfil.email }}</div>
-        <div>{{ perfil.telefone|default:"-" }}</div>
-        <div>{{ perfil.data_nascimento|date:"d/m/Y" }}</div>
-        <div>{{ perfil.get_controle_acesso_display }}</div>
-        <div>{{ perfil.criado_em|date:"d/m/Y H:i" }}</div>
-        <div class="table__actions">
+           <div class="table__actions">
           {% if is_admin %}
             <a class="btn btn--ghost" href="{% url 'editar_perfil' perfil.id %}">Editar</a>
             <form method="post" action="{% url 'excluir_perfil' perfil.id %}" style="display:inline;">

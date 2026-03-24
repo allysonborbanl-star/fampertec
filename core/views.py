@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
-from django.db import connection
+from django.db import connection, models
+from django.db.models import Prefetch
 import re
 from urllib.parse import quote
 
@@ -136,6 +137,47 @@ def avisos_envios_pendentes(request):
     return render(request, "core/avisos_envios_pendentes.html", {"pendentes": pendentes})
 
 
+def avisos_leituras(request):
+    if not request.session.get("perfil_id"):
+        return redirect("login")
+    if not _require_admin(request):
+        return redirect("home")
+
+    busca_aviso = request.GET.get("aviso", "").strip()
+    busca_usuario = request.GET.get("usuario", "").strip()
+
+    avisos = Aviso.objects.order_by("-criado_em", "-id")
+    if busca_aviso:
+        avisos = avisos.filter(titulo__icontains=busca_aviso)
+    if busca_usuario:
+        avisos = avisos.filter(
+            envios__status="LIDO",
+            envios__perfil__nome_completo__icontains=busca_usuario,
+        ).distinct()
+
+    avisos = avisos.prefetch_related(
+        Prefetch(
+            "envios",
+            queryset=AvisoEnvio.objects.select_related("perfil")
+            .filter(status="LIDO")
+            .order_by("perfil__nome_completo", "id"),
+            to_attr="envios_lidos",
+        )
+    )
+    if busca_usuario:
+        for aviso in avisos:
+            aviso.envios_lidos = [
+                envio
+                for envio in aviso.envios_lidos
+                if busca_usuario.lower() in envio.perfil.nome_completo.lower()
+            ]
+    return render(
+        request,
+        "core/avisos_leituras.html",
+        {"avisos": avisos, "busca_aviso": busca_aviso, "busca_usuario": busca_usuario},
+    )
+
+
 def aviso_enviar_whatsapp(request, envio_id):
     if not request.session.get("perfil_id"):
         return redirect("login")
@@ -170,6 +212,47 @@ def quadro_avisos_envios_pendentes(request):
     )
 
 
+def quadro_avisos_leituras(request):
+    if not request.session.get("perfil_id"):
+        return redirect("login")
+    if not _require_admin(request):
+        return redirect("home")
+
+    busca_aviso = request.GET.get("aviso", "").strip()
+    busca_usuario = request.GET.get("usuario", "").strip()
+
+    avisos = QuadroAviso.objects.order_by("-criado_em", "-id")
+    if busca_aviso:
+        avisos = avisos.filter(titulo__icontains=busca_aviso)
+    if busca_usuario:
+        avisos = avisos.filter(
+            envios__status="LIDO",
+            envios__perfil__nome_completo__icontains=busca_usuario,
+        ).distinct()
+
+    avisos = avisos.prefetch_related(
+        Prefetch(
+            "envios",
+            queryset=QuadroAvisoEnvio.objects.select_related("perfil")
+            .filter(status="LIDO")
+            .order_by("perfil__nome_completo", "id"),
+            to_attr="envios_lidos",
+        )
+    )
+    if busca_usuario:
+        for aviso in avisos:
+            aviso.envios_lidos = [
+                envio
+                for envio in aviso.envios_lidos
+                if busca_usuario.lower() in envio.perfil.nome_completo.lower()
+            ]
+    return render(
+        request,
+        "core/quadro_avisos_leituras.html",
+        {"avisos": avisos, "busca_aviso": busca_aviso, "busca_usuario": busca_usuario},
+    )
+
+
 def quadro_aviso_enviar_whatsapp(request, envio_id):
     if not request.session.get("perfil_id"):
         return redirect("login")
@@ -201,6 +284,54 @@ def comunicados_envios_pendentes(request):
         request,
         "core/comunicados_envios_pendentes.html",
         {"pendentes": pendentes},
+    )
+
+
+def comunicados_leituras(request):
+    if not request.session.get("perfil_id"):
+        return redirect("login")
+    if not _require_admin(request):
+        return redirect("home")
+
+    busca_comunicado = request.GET.get("comunicado", "").strip()
+    busca_usuario = request.GET.get("usuario", "").strip()
+
+    comunicados = Comunicado.objects.order_by("-criado_em", "-id")
+    if busca_comunicado:
+        comunicados = comunicados.filter(
+            models.Q(numero_comunicado__icontains=busca_comunicado)
+            | models.Q(titulo__icontains=busca_comunicado)
+        )
+    if busca_usuario:
+        comunicados = comunicados.filter(
+            envios__status="LIDO",
+            envios__perfil__nome_completo__icontains=busca_usuario,
+        ).distinct()
+
+    comunicados = comunicados.prefetch_related(
+        Prefetch(
+            "envios",
+            queryset=ComunicadoEnvio.objects.select_related("perfil")
+            .filter(status="LIDO")
+            .order_by("perfil__nome_completo", "id"),
+            to_attr="envios_lidos",
+        )
+    )
+    if busca_usuario:
+        for comunicado in comunicados:
+            comunicado.envios_lidos = [
+                envio
+                for envio in comunicado.envios_lidos
+                if busca_usuario.lower() in envio.perfil.nome_completo.lower()
+            ]
+    return render(
+        request,
+        "core/comunicados_leituras.html",
+        {
+            "comunicados": comunicados,
+            "busca_comunicado": busca_comunicado,
+            "busca_usuario": busca_usuario,
+        },
     )
 
 
@@ -440,7 +571,21 @@ def lista_avisos(request):
             )
     else:
         avisos = Aviso.objects.none()
-    return render(request, "core/lista_avisos.html", {"avisos": avisos, "is_admin": is_admin})
+    avisos_list = list(avisos)
+    status_map = {}
+    if perfil and avisos_list:
+        envios = AvisoEnvio.objects.filter(
+            aviso__in=avisos_list,
+            perfil=perfil,
+        ).only("aviso_id", "status")
+        status_map = {envio.aviso_id: envio.status for envio in envios}
+    for aviso in avisos_list:
+        aviso.status_leitura = status_map.get(aviso.id, "PENDENTE")
+    return render(
+        request,
+        "core/lista_avisos.html",
+        {"avisos": avisos_list, "is_admin": is_admin},
+    )
 
 
 def detalhe_aviso(request, pk):
@@ -455,7 +600,47 @@ def detalhe_aviso(request, pk):
         aviso = get_object_or_404(Aviso, pk=pk)
     else:
         aviso = _get_objeto_com_visualizacao(Aviso, pk, perfil.controle_acesso)
-    return render(request, "core/detalhe_aviso.html", {"aviso": aviso})
+    envio = AvisoEnvio.objects.filter(aviso=aviso, perfil=perfil).first()
+    return render(
+        request,
+        "core/detalhe_aviso.html",
+        {"aviso": aviso, "envio": envio, "is_admin": perfil.controle_acesso == "admin"},
+    )
+
+
+def aviso_confirmar_leitura(request, pk):
+    if not request.session.get("perfil_id"):
+        return redirect("login")
+
+    if request.method != "POST":
+        return redirect("detalhe_aviso", pk=pk)
+
+    perfil = CadastroPerfil.objects.filter(id=request.session.get("perfil_id")).first()
+    if not perfil:
+        return redirect("login")
+
+    if perfil.controle_acesso == "admin":
+        aviso = get_object_or_404(Aviso, pk=pk)
+    else:
+        aviso = _get_objeto_com_visualizacao(Aviso, pk, perfil.controle_acesso)
+
+    telefone = perfil.telefone or ""
+    telefone_digits = re.sub(r"\D", "", telefone)
+    if telefone_digits and not telefone_digits.startswith("55"):
+        telefone_digits = f"55{telefone_digits}"
+
+    envio, _ = AvisoEnvio.objects.get_or_create(
+        aviso=aviso,
+        perfil=perfil,
+        defaults={"telefone_whats": telefone_digits or ""},
+    )
+    if envio.status != "LIDO":
+        envio.status = "LIDO"
+        envio.lido_em = timezone.now()
+        envio.save(update_fields=["status", "lido_em"])
+        messages.success(request, "Leitura confirmada.")
+
+    return redirect("detalhe_aviso", pk=pk)
 
 
 def editar_aviso(request, pk):
@@ -514,7 +699,21 @@ def lista_quadro_avisos(request):
             )
     else:
         avisos = QuadroAviso.objects.none()
-    return render(request, "core/lista_quadro_avisos.html", {"avisos": avisos, "is_admin": is_admin})
+    avisos_list = list(avisos)
+    status_map = {}
+    if perfil and avisos_list:
+        envios = QuadroAvisoEnvio.objects.filter(
+            quadro_aviso__in=avisos_list,
+            perfil=perfil,
+        ).only("quadro_aviso_id", "status")
+        status_map = {envio.quadro_aviso_id: envio.status for envio in envios}
+    for aviso in avisos_list:
+        aviso.status_leitura = status_map.get(aviso.id, "PENDENTE")
+    return render(
+        request,
+        "core/lista_quadro_avisos.html",
+        {"avisos": avisos_list, "is_admin": is_admin},
+    )
 
 
 def detalhe_quadro_aviso(request, pk):
@@ -529,7 +728,47 @@ def detalhe_quadro_aviso(request, pk):
         aviso = get_object_or_404(QuadroAviso, pk=pk)
     else:
         aviso = _get_objeto_com_visualizacao(QuadroAviso, pk, perfil.controle_acesso)
-    return render(request, "core/detalhe_quadro_aviso.html", {"aviso": aviso})
+    envio = QuadroAvisoEnvio.objects.filter(quadro_aviso=aviso, perfil=perfil).first()
+    return render(
+        request,
+        "core/detalhe_quadro_aviso.html",
+        {"aviso": aviso, "envio": envio, "is_admin": perfil.controle_acesso == "admin"},
+    )
+
+
+def quadro_aviso_confirmar_leitura(request, pk):
+    if not request.session.get("perfil_id"):
+        return redirect("login")
+
+    if request.method != "POST":
+        return redirect("detalhe_quadro_aviso", pk=pk)
+
+    perfil = CadastroPerfil.objects.filter(id=request.session.get("perfil_id")).first()
+    if not perfil:
+        return redirect("login")
+
+    if perfil.controle_acesso == "admin":
+        aviso = get_object_or_404(QuadroAviso, pk=pk)
+    else:
+        aviso = _get_objeto_com_visualizacao(QuadroAviso, pk, perfil.controle_acesso)
+
+    telefone = perfil.telefone or ""
+    telefone_digits = re.sub(r"\D", "", telefone)
+    if telefone_digits and not telefone_digits.startswith("55"):
+        telefone_digits = f"55{telefone_digits}"
+
+    envio, _ = QuadroAvisoEnvio.objects.get_or_create(
+        quadro_aviso=aviso,
+        perfil=perfil,
+        defaults={"telefone_whats": telefone_digits or ""},
+    )
+    if envio.status != "LIDO":
+        envio.status = "LIDO"
+        envio.lido_em = timezone.now()
+        envio.save(update_fields=["status", "lido_em"])
+        messages.success(request, "Leitura confirmada.")
+
+    return redirect("detalhe_quadro_aviso", pk=pk)
 
 
 def cadastro_quadro_avisos(request):
@@ -629,7 +868,21 @@ def lista_comunicados(request):
             )
     else:
         comunicados = Comunicado.objects.none()
-    return render(request, "core/lista_comunicados.html", {"comunicados": comunicados, "is_admin": is_admin})
+    comunicados_list = list(comunicados)
+    status_map = {}
+    if perfil and comunicados_list:
+        envios = ComunicadoEnvio.objects.filter(
+            comunicado__in=comunicados_list,
+            perfil=perfil,
+        ).only("comunicado_id", "status")
+        status_map = {envio.comunicado_id: envio.status for envio in envios}
+    for comunicado in comunicados_list:
+        comunicado.status_leitura = status_map.get(comunicado.id, "PENDENTE")
+    return render(
+        request,
+        "core/lista_comunicados.html",
+        {"comunicados": comunicados_list, "is_admin": is_admin},
+    )
 
 
 def detalhe_comunicado(request, pk):
@@ -644,7 +897,47 @@ def detalhe_comunicado(request, pk):
         comunicado = get_object_or_404(Comunicado, pk=pk)
     else:
         comunicado = _get_objeto_com_visualizacao(Comunicado, pk, perfil.controle_acesso)
-    return render(request, "core/detalhe_comunicado.html", {"comunicado": comunicado})
+    envio = ComunicadoEnvio.objects.filter(comunicado=comunicado, perfil=perfil).first()
+    return render(
+        request,
+        "core/detalhe_comunicado.html",
+        {"comunicado": comunicado, "envio": envio, "is_admin": perfil.controle_acesso == "admin"},
+    )
+
+
+def comunicado_confirmar_leitura(request, pk):
+    if not request.session.get("perfil_id"):
+        return redirect("login")
+
+    if request.method != "POST":
+        return redirect("detalhe_comunicado", pk=pk)
+
+    perfil = CadastroPerfil.objects.filter(id=request.session.get("perfil_id")).first()
+    if not perfil:
+        return redirect("login")
+
+    if perfil.controle_acesso == "admin":
+        comunicado = get_object_or_404(Comunicado, pk=pk)
+    else:
+        comunicado = _get_objeto_com_visualizacao(Comunicado, pk, perfil.controle_acesso)
+
+    telefone = perfil.telefone or ""
+    telefone_digits = re.sub(r"\D", "", telefone)
+    if telefone_digits and not telefone_digits.startswith("55"):
+        telefone_digits = f"55{telefone_digits}"
+
+    envio, _ = ComunicadoEnvio.objects.get_or_create(
+        comunicado=comunicado,
+        perfil=perfil,
+        defaults={"telefone_whats": telefone_digits or ""},
+    )
+    if envio.status != "LIDO":
+        envio.status = "LIDO"
+        envio.lido_em = timezone.now()
+        envio.save(update_fields=["status", "lido_em"])
+        messages.success(request, "Leitura confirmada.")
+
+    return redirect("detalhe_comunicado", pk=pk)
 
 
 def cadastro_comunicados(request):
