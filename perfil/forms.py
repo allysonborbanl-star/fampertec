@@ -4,6 +4,11 @@ from .models import CadastroPerfil
 
 
 class ProfileForm(forms.ModelForm):
+    data_nascimento = forms.DateField(
+        input_formats=["%Y-%m-%d", "%d/%m/%Y"],
+        widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
+    )
+
     class Meta:
         model = CadastroPerfil
         fields = [
@@ -21,7 +26,4 @@ class ProfileForm(forms.ModelForm):
             "cargo": "Cargo",
             "data_nascimento": "Data de nascimento",
             "controle_acesso": "Controle de acesso",
-        }
-        widgets = {
-            "data_nascimento": forms.DateInput(attrs={"type": "date"}),
         }
