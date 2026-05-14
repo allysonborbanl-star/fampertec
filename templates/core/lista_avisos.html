@@ -6,8 +6,8 @@
   <h1>Mural de Avisos Internos</h1>
 
   <div class="form__actions">
-    <a class="btn" href="{% url 'cadastro_avisos' %}">Cadastrar</a>
     {% if is_admin %}
+      <a class="btn" href="{% url 'cadastro_avisos' %}">Cadastrar</a>
       <a class="btn btn--ghost" href="{% url 'avisos_envios_pendentes' %}">Pendentes WhatsApp</a>
       <a class="btn btn--ghost" href="{% url 'avisos_leituras' %}">Leituras confirmadas</a>
     {% endif %}

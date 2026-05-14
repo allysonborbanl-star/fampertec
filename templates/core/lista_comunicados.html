@@ -6,8 +6,8 @@
   <h1>Comunicados</h1>
 
   <div class="form__actions">
-    <a class="btn" href="{% url 'cadastro_comunicados' %}">Cadastrar</a>
     {% if is_admin %}
+      <a class="btn" href="{% url 'cadastro_comunicados' %}">Cadastrar</a>
       <a class="btn btn--ghost" href="{% url 'comunicados_envios_pendentes' %}">Pendentes WhatsApp</a>
       <a class="btn btn--ghost" href="{% url 'comunicados_leituras' %}">Leituras confirmadas</a>
     {% endif %}

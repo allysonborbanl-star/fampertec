@@ -36,6 +36,8 @@
 
   <div class="form__actions">
     <a class="btn" href="{% url 'lista_comunicados' %}">Ir para comunicados</a>
-    <a class="btn btn--ghost" href="{% url 'cadastro_comunicados' %}">Cadastrar outro comunicado</a>
+    {% if is_admin %}
+      <a class="btn btn--ghost" href="{% url 'cadastro_comunicados' %}">Cadastrar outro comunicado</a>
+    {% endif %}
   </div>
 {% endblock %}

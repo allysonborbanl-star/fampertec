@@ -6,7 +6,9 @@
   <h1>Fotos</h1>
 
   <div class="form__actions">
-    <a class="btn" href="{% url 'cadastro_fotos' %}">Cadastrar</a>
+    {% if is_admin %}
+      <a class="btn" href="{% url 'cadastro_fotos' %}">Cadastrar</a>
+    {% endif %}
     <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>
   </div>
 

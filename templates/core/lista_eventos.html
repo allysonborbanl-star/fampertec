@@ -6,8 +6,8 @@
   <h1>Eventos</h1>
 
   <div class="form__actions">
-    <a class="btn" href="{% url 'cadastro_eventos' %}">Cadastrar</a>
     {% if is_admin %}
+      <a class="btn" href="{% url 'cadastro_eventos' %}">Cadastrar</a>
       <a class="btn btn--ghost" href="{% url 'eventos_envios_pendentes' %}">Pendentes WhatsApp</a>
     {% endif %}
     <a class="btn btn--ghost" href="{% url 'home' %}">Voltar</a>

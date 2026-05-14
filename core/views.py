@@ -85,6 +85,8 @@ def aniversariantes(request):
 def cadastro_avisos(request):
     if not request.session.get("perfil_id"):
         return redirect("login")
+    if not _require_admin(request):
+        return redirect("lista_avisos")
 
     if request.method == "POST":
         form = AvisoForm(request.POST, request.FILES)
@@ -115,7 +117,7 @@ def cadastro_avisos(request):
             return render(
                 request,
                 "core/avisos_links.html",
-                {"aviso": aviso, "destinatarios": destinatarios},
+                {"aviso": aviso, "destinatarios": destinatarios, "is_admin": True},
             )
     else:
         form = AvisoForm()
@@ -402,6 +404,8 @@ def lista_fotos(request):
 def cadastro_fotos(request):
     if not request.session.get("perfil_id"):
         return redirect("login")
+    if not _require_admin(request):
+        return redirect("lista_fotos")
 
     if request.method == "POST":
         form = FotoPostagemForm(request.POST)
@@ -480,6 +484,8 @@ def lista_videos(request):
 def cadastro_videos(request):
     if not request.session.get("perfil_id"):
         return redirect("login")
+    if not _require_admin(request):
+        return redirect("lista_videos")
 
     if request.method == "POST":
         form = VideoPostagemForm(request.POST)
@@ -774,6 +780,8 @@ def quadro_aviso_confirmar_leitura(request, pk):
 def cadastro_quadro_avisos(request):
     if not request.session.get("perfil_id"):
         return redirect("login")
+    if not _require_admin(request):
+        return redirect("lista_quadro_avisos")
 
     if request.method == "POST":
         form = QuadroAvisoForm(request.POST, request.FILES)
@@ -804,7 +812,7 @@ def cadastro_quadro_avisos(request):
             return render(
                 request,
                 "core/quadro_avisos_links.html",
-                {"aviso": aviso, "destinatarios": destinatarios},
+                {"aviso": aviso, "destinatarios": destinatarios, "is_admin": True},
             )
     else:
         form = QuadroAvisoForm()
@@ -943,6 +951,8 @@ def comunicado_confirmar_leitura(request, pk):
 def cadastro_comunicados(request):
     if not request.session.get("perfil_id"):
         return redirect("login")
+    if not _require_admin(request):
+        return redirect("lista_comunicados")
 
     if request.method == "POST":
         form = ComunicadoForm(request.POST, request.FILES)
@@ -973,7 +983,7 @@ def cadastro_comunicados(request):
             return render(
                 request,
                 "core/comunicados_links.html",
-                {"comunicado": comunicado, "destinatarios": destinatarios},
+                {"comunicado": comunicado, "destinatarios": destinatarios, "is_admin": True},
             )
     else:
         form = ComunicadoForm(initial={"data_emissao": timezone.localdate()})
@@ -1078,6 +1088,8 @@ def _get_objeto_com_visualizacao(model, pk, controle_acesso):
 def cadastro_eventos(request):
     if not request.session.get("perfil_id"):
         return redirect("login")
+    if not _require_admin(request):
+        return redirect("lista_eventos")
 
     if request.method == "POST":
         form = EventoForm(request.POST, request.FILES)
@@ -1108,7 +1120,7 @@ def cadastro_eventos(request):
             return render(
                 request,
                 "core/eventos_links.html",
-                {"evento": evento, "destinatarios": destinatarios},
+                {"evento": evento, "destinatarios": destinatarios, "is_admin": True},
             )
     else:
         form = EventoForm()

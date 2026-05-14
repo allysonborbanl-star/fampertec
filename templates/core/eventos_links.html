@@ -36,6 +36,8 @@
 
   <div class="form__actions">
     <a class="btn" href="{% url 'lista_eventos' %}">Ir para eventos</a>
-    <a class="btn btn--ghost" href="{% url 'cadastro_eventos' %}">Cadastrar outro evento</a>
+    {% if is_admin %}
+      <a class="btn btn--ghost" href="{% url 'cadastro_eventos' %}">Cadastrar outro evento</a>
+    {% endif %}
   </div>
 {% endblock %}

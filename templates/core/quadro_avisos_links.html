@@ -36,6 +36,8 @@
 
   <div class="form__actions">
     <a class="btn" href="{% url 'lista_quadro_avisos' %}">Ir para quadro de avisos</a>
-    <a class="btn btn--ghost" href="{% url 'cadastro_quadro_avisos' %}">Cadastrar outro aviso</a>
+    {% if is_admin %}
+      <a class="btn btn--ghost" href="{% url 'cadastro_quadro_avisos' %}">Cadastrar outro aviso</a>
+    {% endif %}
   </div>
 {% endblock %}
