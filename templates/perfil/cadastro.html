@@ -36,7 +36,13 @@
 
       <label class="field">
         <span class="field__label">{{ form.data_nascimento.label }}</span>
-        {{ form.data_nascimento }}
+        <input
+          type="date"
+          name="{{ form.data_nascimento.html_name }}"
+          value="{{ data_nascimento_value }}"
+          required
+          id="{{ form.data_nascimento.id_for_label }}"
+        />
         {% if form.data_nascimento.errors %}<span class="field__error">{{ form.data_nascimento.errors|striptags }}</span>{% endif %}
       </label>
 

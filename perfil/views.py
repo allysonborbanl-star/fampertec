@@ -16,6 +16,17 @@ def _is_admin(perfil):
     return bool(perfil and perfil.controle_acesso == "admin")
 
 
+def _data_nascimento_value(form, perfil=None):
+    value = form["data_nascimento"].value()
+    if hasattr(value, "strftime"):
+        return value.strftime("%Y-%m-%d")
+    if value:
+        return value
+    if perfil and perfil.data_nascimento:
+        return perfil.data_nascimento.strftime("%Y-%m-%d")
+    return ""
+
+
 def lista_perfis(request):
     perfil_logado = _get_perfil_logado(request)
     if not perfil_logado:
@@ -59,7 +70,16 @@ def cadastro_perfil(request):
     else:
         form = ProfileForm()
 
-    return render(request, "perfil/cadastro.html", {"form": form, "perfil_logado": perfil_logado, "is_admin": True})
+    return render(
+        request,
+        "perfil/cadastro.html",
+        {
+            "form": form,
+            "perfil_logado": perfil_logado,
+            "is_admin": True,
+            "data_nascimento_value": _data_nascimento_value(form),
+        },
+    )
 
 
 def editar_perfil(request, pk):
@@ -85,7 +105,13 @@ def editar_perfil(request, pk):
     return render(
         request,
         "perfil/cadastro.html",
-        {"form": form, "perfil": perfil, "perfil_logado": perfil_logado, "is_admin": True},
+        {
+            "form": form,
+            "perfil": perfil,
+            "perfil_logado": perfil_logado,
+            "is_admin": True,
+            "data_nascimento_value": _data_nascimento_value(form, perfil),
+        },
     )
 
 
