@@ -19,8 +19,6 @@ class AvisoForm(forms.ModelForm):
             "link",
             "data_fim_publicacao",
             "imagem_capa",
-            "imagem_1",
-            "documento",
             "visualizacao",
         ]
         labels = {
@@ -29,8 +27,6 @@ class AvisoForm(forms.ModelForm):
             "link": "Link",
             "data_fim_publicacao": "Data fim publicação",
             "imagem_capa": "Imagem de capa",
-            "imagem_1": "Imagem 1",
-            "documento": "Documento",
         }
         widgets = {
             "data_fim_publicacao": forms.DateInput(attrs={"type": "date"}),
@@ -52,8 +48,6 @@ class QuadroAvisoForm(forms.ModelForm):
             "link",
             "data_fim_publicacao",
             "imagem_capa",
-            "imagem_1",
-            "documento",
             "visualizacao",
         ]
         labels = {
@@ -62,8 +56,6 @@ class QuadroAvisoForm(forms.ModelForm):
             "link": "Link",
             "data_fim_publicacao": "Data fim publicação",
             "imagem_capa": "Imagem de capa",
-            "imagem_1": "Imagem 1",
-            "documento": "Documento",
         }
         widgets = {
             "data_fim_publicacao": forms.DateInput(attrs={"type": "date"}),
@@ -91,8 +83,6 @@ class ComunicadoForm(forms.ModelForm):
             "descricao",
             "link",
             "imagem_capa",
-            "documento_1",
-            "documento_2",
             "visualizacao",
         ]
         labels = {
@@ -102,8 +92,6 @@ class ComunicadoForm(forms.ModelForm):
             "descricao": "Descrição",
             "link": "Link",
             "imagem_capa": "Imagem de capa",
-            "documento_1": "Documento 1",
-            "documento_2": "Documento 2",
             "visualizacao": "Visualização",
         }
         widgets = {
@@ -121,29 +109,31 @@ class EventoForm(forms.ModelForm):
     class Meta:
         model = Evento
         fields = [
-            "data_evento",
-            "horario_evento",
+            "data_inicio",
+            "horario_inicio",
+            "data_final",
+            "horario_final",
             "evento",
             "local",
             "imagem_capa",
-            "imagem_1",
-            "documento",
             "descricao",
             "visualizacao",
         ]
         labels = {
-            "data_evento": "Data",
-            "horario_evento": "Horário",
+            "data_inicio": "Data Início",
+            "horario_inicio": "Horário Início",
+            "data_final": "Data Final",
+            "horario_final": "Horário Final",
             "evento": "Evento",
             "local": "Local",
             "imagem_capa": "Imagem de capa",
-            "imagem_1": "Imagem 1",
-            "documento": "Documento",
             "descricao": "Descrição",
         }
         widgets = {
-            "data_evento": forms.DateInput(attrs={"type": "date"}),
-            "horario_evento": forms.TimeInput(attrs={"type": "time"}),
+            "data_inicio": forms.DateInput(attrs={"type": "date"}),
+            "horario_inicio": forms.TimeInput(attrs={"type": "time"}),
+            "data_final": forms.DateInput(attrs={"type": "date"}),
+            "horario_final": forms.TimeInput(attrs={"type": "time"}),
         }
 
 

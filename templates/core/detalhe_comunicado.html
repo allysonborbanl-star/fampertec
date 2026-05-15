@@ -18,11 +18,10 @@
         <img src="{{ comunicado.imagem_capa.url }}" alt="Imagem de capa" style="max-width: 100%; border-radius: 12px; border: 1px solid var(--line);" />
       </div>
     {% endif %}
-    {% if comunicado.documento_1 %}
-      <p><strong>Documento 1:</strong> <a class="nav__link" href="{{ comunicado.documento_1.url }}" target="_blank" rel="noreferrer">Baixar</a></p>
-    {% endif %}
-    {% if comunicado.documento_2 %}
-      <p><strong>Documento 2:</strong> <a class="nav__link" href="{{ comunicado.documento_2.url }}" target="_blank" rel="noreferrer">Baixar</a></p>
+    {% if documentos %}
+      {% for documento in documentos %}
+        <p><strong>Documento:</strong> <a class="nav__link" href="{{ documento.documento.url }}" target="_blank" rel="noreferrer">Baixar</a></p>
+      {% endfor %}
     {% endif %}
     <p><strong>Criado em:</strong> {{ comunicado.criado_em|date:"d/m/Y H:i" }}</p>
     {% if envio %}

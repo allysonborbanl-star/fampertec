@@ -16,7 +16,7 @@
   <div class="table table--eventos{% if is_admin %} table--admin{% endif %}">
     <div class="table__row table__head">
       <div>Evento</div>
-      <div>Data</div>
+      <div>Data Início</div>
       {% if is_admin %}
         <div class="table__actions-head">Ações</div>
       {% endif %}
@@ -25,7 +25,7 @@
     {% for evento in eventos %}
       <div class="table__row">
         <div class="table__event"><a class="nav__link" href="{% url 'detalhe_evento' evento.id %}">{{ evento.evento }}</a></div>
-        <div>{{ evento.data_evento|date:"d/m/Y" }}</div>
+        <div data-label="Data Início">{{ evento.data_inicio|date:"d/m/Y" }}</div>
         {% if is_admin %}
           <div class="table__actions">
             <a class="btn btn--ghost" href="{% url 'editar_evento' evento.id %}">Editar</a>

@@ -15,8 +15,6 @@ class Aviso(models.Model):
     link = models.URLField(blank=True)
     data_fim_publicacao = models.DateField()
     imagem_capa = models.ImageField(upload_to="avisos/", blank=True, null=True)
-    imagem_1 = models.ImageField(upload_to="avisos/", blank=True, null=True)
-    documento = models.FileField(upload_to="avisos/", blank=True, null=True)
     visualizacao = models.JSONField(default=list)
     criado_em = models.DateTimeField(auto_now_add=True)
 
@@ -27,6 +25,18 @@ class Aviso(models.Model):
     def visualizacao_display(self) -> str:
         labels = dict(self.VISUALIZACAO_CHOICES)
         return ", ".join(labels.get(item, item) for item in (self.visualizacao or []))
+
+
+class AvisoImagem(models.Model):
+    aviso = models.ForeignKey(Aviso, on_delete=models.CASCADE, related_name="imagens")
+    imagem = models.ImageField(upload_to="avisos/")
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+
+class AvisoDocumento(models.Model):
+    aviso = models.ForeignKey(Aviso, on_delete=models.CASCADE, related_name="documentos")
+    documento = models.FileField(upload_to="avisos/")
+    criado_em = models.DateTimeField(auto_now_add=True)
 
 
 class AvisoEnvio(models.Model):
@@ -60,8 +70,6 @@ class QuadroAviso(models.Model):
     link = models.URLField(blank=True)
     data_fim_publicacao = models.DateField()
     imagem_capa = models.ImageField(upload_to="quadro_avisos/", blank=True, null=True)
-    imagem_1 = models.ImageField(upload_to="quadro_avisos/", blank=True, null=True)
-    documento = models.FileField(upload_to="quadro_avisos/", blank=True, null=True)
     visualizacao = models.JSONField(default=list)
     criado_em = models.DateTimeField(auto_now_add=True)
 
@@ -72,6 +80,18 @@ class QuadroAviso(models.Model):
     def visualizacao_display(self) -> str:
         labels = dict(self.VISUALIZACAO_CHOICES)
         return ", ".join(labels.get(item, item) for item in (self.visualizacao or []))
+
+
+class QuadroAvisoImagem(models.Model):
+    quadro_aviso = models.ForeignKey(QuadroAviso, on_delete=models.CASCADE, related_name="imagens")
+    imagem = models.ImageField(upload_to="quadro_avisos/")
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+
+class QuadroAvisoDocumento(models.Model):
+    quadro_aviso = models.ForeignKey(QuadroAviso, on_delete=models.CASCADE, related_name="documentos")
+    documento = models.FileField(upload_to="quadro_avisos/")
+    criado_em = models.DateTimeField(auto_now_add=True)
 
 
 class QuadroAvisoEnvio(models.Model):
@@ -106,8 +126,6 @@ class Comunicado(models.Model):
     descricao = models.TextField()
     link = models.URLField(blank=True)
     imagem_capa = models.ImageField(upload_to="comunicados/", blank=True, null=True)
-    documento_1 = models.FileField(upload_to="comunicados/", blank=True, null=True)
-    documento_2 = models.FileField(upload_to="comunicados/", blank=True, null=True)
     visualizacao = models.JSONField(default=list)
     criado_em = models.DateTimeField(auto_now_add=True)
 
@@ -138,6 +156,12 @@ class ComunicadoEnvio(models.Model):
         unique_together = [("comunicado", "perfil")]
 
 
+class ComunicadoDocumento(models.Model):
+    comunicado = models.ForeignKey(Comunicado, on_delete=models.CASCADE, related_name="documentos")
+    documento = models.FileField(upload_to="comunicados/")
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+
 class Evento(models.Model):
     VISUALIZACAO_CHOICES = [
         ("admin", "Admin"),
@@ -146,13 +170,13 @@ class Evento(models.Model):
         ("professor", "Professor"),
     ]
 
-    data_evento = models.DateField()
-    horario_evento = models.TimeField()
+    data_inicio = models.DateField()
+    horario_inicio = models.TimeField()
+    data_final = models.DateField(blank=True, null=True)
+    horario_final = models.TimeField(blank=True, null=True)
     evento = models.CharField(max_length=200)
     local = models.CharField(max_length=200)
     imagem_capa = models.ImageField(upload_to="eventos/", blank=True, null=True)
-    imagem_1 = models.ImageField(upload_to="eventos/", blank=True, null=True)
-    documento = models.FileField(upload_to="eventos/", blank=True, null=True)
     descricao = models.TextField()
     visualizacao = models.JSONField(default=list)
     criado_em = models.DateTimeField(auto_now_add=True)
@@ -164,6 +188,18 @@ class Evento(models.Model):
     def visualizacao_display(self) -> str:
         labels = dict(self.VISUALIZACAO_CHOICES)
         return ", ".join(labels.get(item, item) for item in (self.visualizacao or []))
+
+
+class EventoImagem(models.Model):
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name="imagens")
+    imagem = models.ImageField(upload_to="eventos/")
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+
+class EventoDocumento(models.Model):
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE, related_name="documentos")
+    documento = models.FileField(upload_to="eventos/")
+    criado_em = models.DateTimeField(auto_now_add=True)
 
 
 class EventoEnvio(models.Model):

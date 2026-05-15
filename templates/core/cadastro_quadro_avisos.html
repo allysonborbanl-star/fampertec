@@ -34,16 +34,24 @@
         {% if form.imagem_capa.errors %}<span class="field__error">{{ form.imagem_capa.errors|striptags }}</span>{% endif %}
       </label>
 
-      <label class="field field--file field--imagem-1">
-        <span class="field__label">{{ form.imagem_1.label }}</span>
-        {{ form.imagem_1 }}
-        {% if form.imagem_1.errors %}<span class="field__error">{{ form.imagem_1.errors|striptags }}</span>{% endif %}
+      <label class="field field--file field--full field--file-plus">
+        <span class="field__label">Imagem</span>
+        <div class="field__control field__control--inline">
+          <div class="field__files" id="quadro-aviso-imagem-files">
+            <input type="file" name="imagens" accept="image/*" multiple />
+          </div>
+          <button class="btn btn--ghost btn--icon" type="button" id="add-quadro-aviso-imagem" aria-label="Adicionar imagem">+</button>
+        </div>
       </label>
 
-      <label class="field field--file">
-        <span class="field__label">{{ form.documento.label }}</span>
-        {{ form.documento }}
-        {% if form.documento.errors %}<span class="field__error">{{ form.documento.errors|striptags }}</span>{% endif %}
+      <label class="field field--file field--full field--file-plus">
+        <span class="field__label">Documento</span>
+        <div class="field__control field__control--inline">
+          <div class="field__files" id="quadro-aviso-documento-files">
+            <input type="file" name="documentos" multiple />
+          </div>
+          <button class="btn btn--ghost btn--icon" type="button" id="add-quadro-aviso-documento" aria-label="Adicionar documento">+</button>
+        </div>
       </label>
 
       <label class="field">
@@ -64,4 +72,33 @@
       <a class="btn btn--ghost" href="{% url 'lista_quadro_avisos' %}">Voltar</a>
     </div>
   </form>
+
+  <script>
+    (function () {
+      var addBtn = document.getElementById("add-quadro-aviso-imagem");
+      if (!addBtn) return;
+      addBtn.addEventListener("click", function () {
+        var wrapper = document.getElementById("quadro-aviso-imagem-files");
+        if (!wrapper) return;
+        var input = document.createElement("input");
+        input.type = "file";
+        input.name = "imagens";
+        input.accept = "image/*";
+        wrapper.appendChild(input);
+        input.focus();
+      });
+
+      var addDocumentoBtn = document.getElementById("add-quadro-aviso-documento");
+      if (!addDocumentoBtn) return;
+      addDocumentoBtn.addEventListener("click", function () {
+        var wrapper = document.getElementById("quadro-aviso-documento-files");
+        if (!wrapper) return;
+        var input = document.createElement("input");
+        input.type = "file";
+        input.name = "documentos";
+        wrapper.appendChild(input);
+        input.focus();
+      });
+    })();
+  </script>
 {% endblock %}

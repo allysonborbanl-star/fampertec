@@ -10,12 +10,19 @@ from .forms import AvisoForm, QuadroAvisoForm, ComunicadoForm, EventoForm, FotoP
 from perfil.models import CadastroPerfil
 from .models import (
     Aviso,
+    AvisoDocumento,
+    AvisoImagem,
     AvisoEnvio,
     QuadroAviso,
+    QuadroAvisoDocumento,
+    QuadroAvisoImagem,
     QuadroAvisoEnvio,
     Comunicado,
+    ComunicadoDocumento,
     ComunicadoEnvio,
     Evento,
+    EventoDocumento,
+    EventoImagem,
     EventoEnvio,
     FotoPostagem,
     FotoAnexo,
@@ -92,6 +99,10 @@ def cadastro_avisos(request):
         form = AvisoForm(request.POST, request.FILES)
         if form.is_valid():
             aviso = form.save()
+            for arquivo in request.FILES.getlist("imagens"):
+                AvisoImagem.objects.create(aviso=aviso, imagem=arquivo)
+            for arquivo in request.FILES.getlist("documentos"):
+                AvisoDocumento.objects.create(aviso=aviso, documento=arquivo)
             destinatarios = []
             for pessoa in CadastroPerfil.objects.order_by("nome_completo", "id"):
                 if pessoa.controle_acesso not in (aviso.visualizacao or []):
@@ -607,10 +618,18 @@ def detalhe_aviso(request, pk):
     else:
         aviso = _get_objeto_com_visualizacao(Aviso, pk, perfil.controle_acesso)
     envio = AvisoEnvio.objects.filter(aviso=aviso, perfil=perfil).first()
+    imagens = aviso.imagens.order_by("id")
+    documentos = aviso.documentos.order_by("id")
     return render(
         request,
         "core/detalhe_aviso.html",
-        {"aviso": aviso, "envio": envio, "is_admin": perfil.controle_acesso == "admin"},
+        {
+            "aviso": aviso,
+            "envio": envio,
+            "imagens": imagens,
+            "documentos": documentos,
+            "is_admin": perfil.controle_acesso == "admin",
+        },
     )
 
 
@@ -663,6 +682,10 @@ def editar_aviso(request, pk):
         form = AvisoForm(request.POST, request.FILES, instance=aviso)
         if form.is_valid():
             form.save()
+            for arquivo in request.FILES.getlist("imagens"):
+                AvisoImagem.objects.create(aviso=aviso, imagem=arquivo)
+            for arquivo in request.FILES.getlist("documentos"):
+                AvisoDocumento.objects.create(aviso=aviso, documento=arquivo)
             messages.success(request, "Aviso atualizado com sucesso.")
             return redirect("lista_avisos")
     else:
@@ -735,10 +758,18 @@ def detalhe_quadro_aviso(request, pk):
     else:
         aviso = _get_objeto_com_visualizacao(QuadroAviso, pk, perfil.controle_acesso)
     envio = QuadroAvisoEnvio.objects.filter(quadro_aviso=aviso, perfil=perfil).first()
+    imagens = aviso.imagens.order_by("id")
+    documentos = aviso.documentos.order_by("id")
     return render(
         request,
         "core/detalhe_quadro_aviso.html",
-        {"aviso": aviso, "envio": envio, "is_admin": perfil.controle_acesso == "admin"},
+        {
+            "aviso": aviso,
+            "envio": envio,
+            "imagens": imagens,
+            "documentos": documentos,
+            "is_admin": perfil.controle_acesso == "admin",
+        },
     )
 
 
@@ -787,6 +818,10 @@ def cadastro_quadro_avisos(request):
         form = QuadroAvisoForm(request.POST, request.FILES)
         if form.is_valid():
             aviso = form.save()
+            for arquivo in request.FILES.getlist("imagens"):
+                QuadroAvisoImagem.objects.create(quadro_aviso=aviso, imagem=arquivo)
+            for arquivo in request.FILES.getlist("documentos"):
+                QuadroAvisoDocumento.objects.create(quadro_aviso=aviso, documento=arquivo)
             destinatarios = []
             for pessoa in CadastroPerfil.objects.order_by("nome_completo", "id"):
                 if pessoa.controle_acesso not in (aviso.visualizacao or []):
@@ -834,6 +869,10 @@ def editar_quadro_aviso(request, pk):
         form = QuadroAvisoForm(request.POST, request.FILES, instance=aviso)
         if form.is_valid():
             form.save()
+            for arquivo in request.FILES.getlist("imagens"):
+                QuadroAvisoImagem.objects.create(quadro_aviso=aviso, imagem=arquivo)
+            for arquivo in request.FILES.getlist("documentos"):
+                QuadroAvisoDocumento.objects.create(quadro_aviso=aviso, documento=arquivo)
             messages.success(request, "Aviso atualizado com sucesso.")
             return redirect("lista_quadro_avisos")
     else:
@@ -906,10 +945,16 @@ def detalhe_comunicado(request, pk):
     else:
         comunicado = _get_objeto_com_visualizacao(Comunicado, pk, perfil.controle_acesso)
     envio = ComunicadoEnvio.objects.filter(comunicado=comunicado, perfil=perfil).first()
+    documentos = comunicado.documentos.order_by("id")
     return render(
         request,
         "core/detalhe_comunicado.html",
-        {"comunicado": comunicado, "envio": envio, "is_admin": perfil.controle_acesso == "admin"},
+        {
+            "comunicado": comunicado,
+            "envio": envio,
+            "documentos": documentos,
+            "is_admin": perfil.controle_acesso == "admin",
+        },
     )
 
 
@@ -958,6 +1003,8 @@ def cadastro_comunicados(request):
         form = ComunicadoForm(request.POST, request.FILES)
         if form.is_valid():
             comunicado = form.save()
+            for arquivo in request.FILES.getlist("documentos"):
+                ComunicadoDocumento.objects.create(comunicado=comunicado, documento=arquivo)
             destinatarios = []
             for pessoa in CadastroPerfil.objects.order_by("nome_completo", "id"):
                 if pessoa.controle_acesso not in (comunicado.visualizacao or []):
@@ -1005,6 +1052,8 @@ def editar_comunicado(request, pk):
         form = ComunicadoForm(request.POST, request.FILES, instance=comunicado)
         if form.is_valid():
             form.save()
+            for arquivo in request.FILES.getlist("documentos"):
+                ComunicadoDocumento.objects.create(comunicado=comunicado, documento=arquivo)
             messages.success(request, "Comunicado atualizado com sucesso.")
             return redirect("lista_comunicados")
     else:
@@ -1039,10 +1088,10 @@ def lista_eventos(request):
     is_admin = bool(perfil and perfil.controle_acesso == "admin")
     if perfil:
         if is_admin:
-            eventos = Evento.objects.order_by("-data_evento", "-horario_evento", "-id")
+            eventos = Evento.objects.order_by("-data_inicio", "-horario_inicio", "-id")
         else:
             eventos = _filtrar_por_visualizacao(
-                Evento.objects.order_by("-data_evento", "-horario_evento", "-id"),
+                Evento.objects.order_by("-data_inicio", "-horario_inicio", "-id"),
                 perfil.controle_acesso,
             )
     else:
@@ -1062,7 +1111,13 @@ def detalhe_evento(request, pk):
         evento = get_object_or_404(Evento, pk=pk)
     else:
         evento = _get_objeto_com_visualizacao(Evento, pk, perfil.controle_acesso)
-    return render(request, "core/detalhe_evento.html", {"evento": evento})
+    imagens = evento.imagens.order_by("id")
+    documentos = evento.documentos.order_by("id")
+    return render(
+        request,
+        "core/detalhe_evento.html",
+        {"evento": evento, "imagens": imagens, "documentos": documentos},
+    )
 
 
 def _filtrar_por_visualizacao(queryset, controle_acesso):
@@ -1095,6 +1150,10 @@ def cadastro_eventos(request):
         form = EventoForm(request.POST, request.FILES)
         if form.is_valid():
             evento = form.save()
+            for arquivo in request.FILES.getlist("imagens"):
+                EventoImagem.objects.create(evento=evento, imagem=arquivo)
+            for arquivo in request.FILES.getlist("documentos"):
+                EventoDocumento.objects.create(evento=evento, documento=arquivo)
             destinatarios = []
             for pessoa in CadastroPerfil.objects.order_by("nome_completo", "id"):
                 if pessoa.controle_acesso not in (evento.visualizacao or []):
@@ -1142,6 +1201,10 @@ def editar_evento(request, pk):
         form = EventoForm(request.POST, request.FILES, instance=evento)
         if form.is_valid():
             form.save()
+            for arquivo in request.FILES.getlist("imagens"):
+                EventoImagem.objects.create(evento=evento, imagem=arquivo)
+            for arquivo in request.FILES.getlist("documentos"):
+                EventoDocumento.objects.create(evento=evento, documento=arquivo)
             messages.success(request, "Evento atualizado com sucesso.")
             return redirect("lista_eventos")
     else:
